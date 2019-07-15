@@ -1,24 +1,20 @@
-import { Context } from './common/interfaces';
-import { Compositor } from './Compositor';
-import { createBackgroundLayer } from './layers';
+import { Compositor } from './classes/Compositor';
+import { Keyboard } from './classes/Keyboard';
+import { Timer } from './classes/Timer';
+import { createMario } from './entities';
+import { createBackgroundLayer, createSpriteLayer } from './layers';
 import { loadLevel } from './loaders';
-import { loadBackgroundSprites, loadMarioSprites } from './sprites';
-import { SpriteSheet } from './SpriteSheet';
+import { loadBackgroundSprites } from './sprites';
 
-const createSpriteLayer = (
-  sprite: SpriteSheet,
-  pos: { x: number; y: number }
-) => (ctx: Context) => {
-  sprite.draw('idle', ctx, pos.x, pos.y);
-};
+const SPACE = 32;
 
 (async () => {
   const canvas = document.getElementById('game') as HTMLCanvasElement;
   const ctx = canvas.getContext('2d')!;
   if (!ctx) throw new Error('Cannot define 2D context');
 
-  const [marioSprite, backgroundSprites, level] = await Promise.all([
-    loadMarioSprites(),
+  const [mario, backgroundSprites, level] = await Promise.all([
+    createMario(),
     loadBackgroundSprites(),
     loadLevel('1-1'),
   ]);
@@ -30,20 +26,27 @@ const createSpriteLayer = (
   );
   comp.layers.push(backgroundLayer);
 
-  const pos = {
-    x: 64,
-    y: 64,
-  };
+  const gravity = 2000;
+  mario.pos.set(64, 180);
 
-  const spriteLayer = createSpriteLayer(marioSprite, pos);
+  const input = new Keyboard();
+  input.addMapping(SPACE, keyState => {
+    if (keyState) {
+      return mario.jump.start();
+    }
+    mario.jump.cancel();
+  });
+  input.listenTo(window);
+
+  const spriteLayer = createSpriteLayer(mario);
   comp.layers.push(spriteLayer);
 
-  function update() {
+  const timer = new Timer();
+  timer.update = function(deltaTime) {
+    mario.update(deltaTime);
     comp.draw(ctx);
-    pos.x += 2;
-    pos.y += 2;
-    requestAnimationFrame(update);
-  }
+    mario.vel.y += gravity * deltaTime;
+  };
 
-  update();
+  timer.start();
 })();

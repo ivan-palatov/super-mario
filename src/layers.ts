@@ -1,5 +1,6 @@
+import { Entity } from './classes/Entity';
+import { SpriteSheet } from './classes/SpriteSheet';
 import { Context, IBackground } from './common/interfaces';
-import { SpriteSheet } from './SpriteSheet';
 
 function drawBackground(bg: IBackground, ctx: Context, sprites: SpriteSheet) {
   bg.ranges.forEach(([x1, x2, y1, y2]) => {
@@ -27,3 +28,7 @@ export function createBackgroundLayer(
     ctx.drawImage(buffer, 0, 0);
   };
 }
+
+export const createSpriteLayer = (entity: Entity) => (ctx: Context) => {
+  entity.draw(ctx);
+};

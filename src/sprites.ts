@@ -1,5 +1,5 @@
+import { SpriteSheet } from './classes/SpriteSheet';
 import { loadImage } from './loaders';
-import { SpriteSheet } from './SpriteSheet';
 
 export async function loadMarioSprites() {
   const image = await loadImage('/img/characters.gif');

@@ -1,4 +1,4 @@
-import { Context } from './common/interfaces';
+import { Context } from '../common/interfaces';
 
 export class SpriteSheet {
   tiles = new Map<string, HTMLCanvasElement>();

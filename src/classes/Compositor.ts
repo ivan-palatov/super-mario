@@ -1,4 +1,4 @@
-import { Context } from './common/interfaces';
+import { Context } from '../common/interfaces';
 
 export class Compositor {
   layers: ((ctx: Context) => void)[] = [];
