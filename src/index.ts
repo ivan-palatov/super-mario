@@ -1,32 +1,49 @@
-import { IBackground } from './common/interfaces';
-import { loadImage, loadLevel } from './loaders';
+import { Context } from './common/interfaces';
+import { Compositor } from './Compositor';
+import { createBackgroundLayer } from './layers';
+import { loadLevel } from './loaders';
+import { loadBackgroundSprites, loadMarioSprites } from './sprites';
 import { SpriteSheet } from './SpriteSheet';
 
-function drawBackground(
-  background: IBackground,
-  ctx: CanvasRenderingContext2D,
-  sprites: SpriteSheet
-) {
-  background.ranges.forEach(([x1, x2, y1, y2]) => {
-    for (let x = x1; x < x2; ++x) {
-      for (let y = y1; y < y2; ++y) {
-        sprites.drawTile(background.tile, ctx, x, y);
-      }
-    }
-  });
-}
+const createSpriteLayer = (
+  sprite: SpriteSheet,
+  pos: { x: number; y: number }
+) => (ctx: Context) => {
+  sprite.draw('idle', ctx, pos.x, pos.y);
+};
 
 (async () => {
   const canvas = document.getElementById('game') as HTMLCanvasElement;
   const ctx = canvas.getContext('2d')!;
+  if (!ctx) throw new Error('Cannot define 2D context');
 
-  const image = await loadImage('/img/tiles.png');
-  const sprites = new SpriteSheet(image, 16, 16);
-  sprites.define('ground', 0, 0);
-  sprites.define('sky', 3, 23);
+  const [marioSprite, backgroundSprites, level] = await Promise.all([
+    loadMarioSprites(),
+    loadBackgroundSprites(),
+    loadLevel('1-1'),
+  ]);
 
-  const level = await loadLevel('1-1');
-  level.backgrounds.forEach(background => {
-    drawBackground(background, ctx, sprites);
-  });
+  const comp = new Compositor();
+  const backgroundLayer = createBackgroundLayer(
+    level.backgrounds,
+    backgroundSprites
+  );
+  comp.layers.push(backgroundLayer);
+
+  const pos = {
+    x: 64,
+    y: 64,
+  };
+
+  const spriteLayer = createSpriteLayer(marioSprite, pos);
+  comp.layers.push(spriteLayer);
+
+  function update() {
+    comp.draw(ctx);
+    pos.x += 2;
+    pos.y += 2;
+    requestAnimationFrame(update);
+  }
+
+  update();
 })();

@@ -1,3 +1,5 @@
+import { Context } from './common/interfaces';
+
 export class SpriteSheet {
   tiles = new Map<string, HTMLCanvasElement>();
 
@@ -13,27 +15,21 @@ export class SpriteSheet {
     private readonly height: number
   ) {}
 
-  define(name: string, x: number, y: number) {
+  define(name: string, x: number, y: number, width: number, height: number) {
     const buffer = document.createElement('canvas');
-    buffer.width = this.width;
-    buffer.height = this.height;
+    buffer.width = width;
+    buffer.height = height;
     buffer
       .getContext('2d')!
-      .drawImage(
-        this.image,
-        x * this.width,
-        y * this.height,
-        this.width,
-        this.height,
-        0,
-        0,
-        this.width,
-        this.height
-      );
+      .drawImage(this.image, x, y, width, height, 0, 0, width, height);
     this.tiles.set(name, buffer);
   }
 
-  draw(name: string, ctx: CanvasRenderingContext2D, x: number, y: number) {
+  defineTile(name: string, x: number, y: number) {
+    this.define(name, x * this.width, y * this.height, this.width, this.height);
+  }
+
+  draw(name: string, ctx: Context, x: number, y: number) {
     const buffer = this.tiles.get(name);
     if (!buffer)
       throw new Error(
@@ -42,7 +38,7 @@ export class SpriteSheet {
     ctx.drawImage(buffer, x, y);
   }
 
-  drawTile(name: string, ctx: CanvasRenderingContext2D, x: number, y: number) {
+  drawTile(name: string, ctx: Context, x: number, y: number) {
     this.draw(name, ctx, x * this.width, y * this.height);
   }
 }
