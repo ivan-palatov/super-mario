@@ -2,12 +2,17 @@ import { Context } from '../common/interfaces';
 
 export class SpriteSheet {
   tiles = new Map<string, HTMLCanvasElement[]>();
+  animations = new Map<string, (distance: number) => string>();
 
   constructor(
     private readonly image: HTMLImageElement,
     private readonly width: number,
     private readonly height: number
   ) {}
+
+  defineAnim(name: string, animation: (distance: number) => string) {
+    this.animations.set(name, animation);
+  }
 
   define(name: string, x: number, y: number, width: number, height: number) {
     const buffers = [false, true].map(flip => {
@@ -36,6 +41,11 @@ export class SpriteSheet {
   draw(name: string, ctx: Context, x: number, y: number, flip = false) {
     const buffer = this.tiles.get(name)![flip ? 1 : 0];
     ctx.drawImage(buffer, x, y);
+  }
+
+  drawAnim(name: string, ctx: Context, x: number, y: number, distance: number) {
+    const animation = this.animations.get(name)!;
+    this.drawTile(animation(distance), ctx, x, y);
   }
 
   drawTile(name: string, ctx: Context, x: number, y: number) {

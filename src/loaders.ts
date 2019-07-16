@@ -1,3 +1,4 @@
+import { createAnimation } from './anim';
 import { Level } from './classes/Level';
 import { SpriteSheet } from './classes/SpriteSheet';
 import { IBackground, ILevel, ISpriteSheet } from './common/interfaces';
@@ -56,21 +57,27 @@ export async function loadSpriteSheet(name: string) {
   const sheetSpec = await loadJSON<ISpriteSheet>(`./spriteSheets/${name}`);
   const image = await loadImage(sheetSpec.imageURL);
   const sprites = new SpriteSheet(image, sheetSpec.tileW, sheetSpec.tileH);
+
   if (sheetSpec.tiles) {
     sheetSpec.tiles.forEach(tile => {
       sprites.defineTile(tile.name, tile.index[0], tile.index[1]);
     });
-  } else {
-    sheetSpec.frames!.forEach(frame => {
-      sprites.define(
-        frame.name,
-        frame.rect[0],
-        frame.rect[1],
-        frame.rect[2],
-        frame.rect[3]
-      );
+  }
+
+  if (sheetSpec.frames) {
+    sheetSpec.frames.forEach(frame => {
+      // @ts-ignore because it doesn't like spread of array of unknown len in the function
+      sprites.define(frame.name, ...frame.rect);
     });
   }
+
+  if (sheetSpec.animations) {
+    sheetSpec.animations.forEach(anim => {
+      const animation = createAnimation(anim.frames, anim.frameLen);
+      sprites.defineAnim(anim.name, animation);
+    });
+  }
+
   return sprites;
 }
 

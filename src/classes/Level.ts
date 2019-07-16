@@ -6,6 +6,8 @@ import { TileCollider } from './TileCollider';
 export class Level {
   private readonly gravity = 2000;
 
+  totalTime = 0;
+
   comp = new Compositor();
   entities = new Set<Entity>();
   tiles = new Matrix();
@@ -22,5 +24,7 @@ export class Level {
       // Apply gravity
       entity.vel.y += this.gravity * delta;
     });
+
+    this.totalTime += delta;
   }
 }

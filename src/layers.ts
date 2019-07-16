@@ -18,15 +18,25 @@ export function createBackgroundLayer(level: Level, sprites: SpriteSheet) {
   let endIndex: number;
 
   function redraw(drawFrom: number, drawTo: number) {
-    if (drawFrom === startIndex && drawTo === endIndex) return;
-
+    // if (drawFrom === startIndex && drawTo === endIndex) return;
     startIndex = drawFrom;
     endIndex = drawTo;
+
     for (let x = drawFrom; x <= drawTo; ++x) {
       const col = tiles.grid[x];
       if (col) {
         col.forEach((tile, y) => {
-          sprites.drawTile(tile.name, context, x - drawFrom, y);
+          if (sprites.animations.has(tile.name)) {
+            sprites.drawAnim(
+              tile.name,
+              context,
+              x - drawFrom,
+              y,
+              level.totalTime
+            );
+          } else {
+            sprites.drawTile(tile.name, context, x - drawFrom, y);
+          }
         });
       }
     }

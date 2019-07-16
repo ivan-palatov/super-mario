@@ -15,6 +15,11 @@ export interface ISpriteSheet {
     name: string;
     rect: number[];
   }>;
+  animations?: Array<{
+    name: string;
+    frameLen: number;
+    frames: string[];
+  }>;
 }
 
 export interface IBackground {
