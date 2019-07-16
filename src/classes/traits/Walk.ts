@@ -1,8 +1,12 @@
+import { SLOW_DRAG } from '../../entities';
 import { Entity, Trait } from '../Entity';
 
 export class Walk extends Trait {
   direction = 0;
-  speed = 6000;
+  acceleration = 400;
+  deceleration = 300;
+  dragFactor = SLOW_DRAG;
+
   distance = 0;
   heading = 1;
 
@@ -11,13 +15,27 @@ export class Walk extends Trait {
   }
 
   update(entity: Entity, deltaTime: number) {
-    entity.vel.x = this.speed * this.direction * deltaTime;
+    const absX = Math.abs(entity.vel.x);
 
-    if (this.direction) {
-      this.heading = this.direction;
-      this.distance += Math.abs(entity.vel.x) * deltaTime;
+    if (this.direction !== 0) {
+      entity.vel.x += this.acceleration * this.direction * deltaTime;
+
+      if (entity.jump) {
+        if (entity.jump.falling === false) {
+          this.heading = this.direction;
+        }
+      } else {
+        this.heading = this.direction;
+      }
+    } else if (entity.vel.x !== 0) {
+      const decel = Math.min(absX, this.deceleration * deltaTime);
+      entity.vel.x += entity.vel.x > 0 ? -decel : decel;
     } else {
-      this.direction = 0;
+      this.distance = 0;
     }
+
+    const drag = this.dragFactor * entity.vel.x * absX;
+    entity.vel.x -= drag;
+    this.distance += absX * deltaTime;
   }
 }

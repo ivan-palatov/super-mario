@@ -1,11 +1,17 @@
 import { Context } from '../common/interfaces';
 import { Vec2 } from './math';
 
+export type Sides = 'top' | 'bottom';
+
 export class Trait {
   constructor(public readonly name: string) {}
 
   update(entity: Entity, deltaTime: number) {
     console.warn('Unhandled update call in Trait class.');
+  }
+
+  obstruct(entity: Entity, side: Sides) {
+    //
   }
 }
 
@@ -29,5 +35,11 @@ export class Entity {
   addTrait(trait: Trait) {
     this.traits.push(trait);
     this[trait.name] = trait;
+  }
+
+  obstruct(side: Sides) {
+    this.traits.forEach(trait => {
+      trait.obstruct(this, side);
+    });
   }
 }
