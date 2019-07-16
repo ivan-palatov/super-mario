@@ -1,9 +1,8 @@
-import { Keyboard } from './classes/Keyboard';
 import { Timer } from './classes/Timer';
 import { createMario } from './entities';
+import { createCollisionLayer } from './layers';
 import { loadLevel } from './loaders';
-
-const SPACE = 32;
+import { setupKeyboard } from './setupKeyboard';
 
 (async () => {
   const canvas = document.getElementById('game') as HTMLCanvasElement;
@@ -15,16 +14,25 @@ const SPACE = 32;
   const gravity = 2000;
   mario.pos.set(64, 64);
 
+  // DEBUG SQUARE
+  level.comp.layers.push(createCollisionLayer(level));
+
   level.entities.add(mario);
 
-  const input = new Keyboard();
-  input.addMapping(SPACE, keyState => {
-    if (keyState) {
-      return mario.jump.start();
-    }
-    mario.jump.cancel();
-  });
+  const input = setupKeyboard(mario);
   input.listenTo(window);
+
+  // DEBUGG / MOVE MARIO WITH MOUSE STUFF
+  (['mousedown', 'mousemove'] as ['mousedown', 'mousemove']).forEach(
+    eventName => {
+      canvas.addEventListener(eventName, e => {
+        if (e.buttons === 1) {
+          mario.vel.set(0, 0);
+          mario.pos.set(e.offsetX, e.offsetY);
+        }
+      });
+    }
+  );
 
   const timer = new Timer();
   timer.update = function(deltaTime) {

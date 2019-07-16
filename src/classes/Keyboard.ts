@@ -4,27 +4,25 @@ const RELEASED = 0;
 const events: ['keydown', 'keyup'] = ['keydown', 'keyup'];
 
 export class Keyboard {
-  keyStates = new Map<number, number>();
-  keyMap = new Map<number, (arg: number) => void>();
+  keyStates = new Map<string, number>();
+  keyMap = new Map<string, (arg: number) => void>();
 
-  addMapping(keycode: number, callback: (keyState: number) => void) {
-    this.keyMap.set(keycode, callback);
+  addMapping(code: string, callback: (keyState: number) => void) {
+    this.keyMap.set(code, callback);
   }
 
   handleEvent(e: KeyboardEvent) {
-    const { keyCode } = e;
-    if (!this.keyMap.has(keyCode)) {
+    const { code } = e;
+    if (!this.keyMap.has(code)) {
       return;
     }
     e.preventDefault();
     const keyState = e.type === 'keydown' ? PRESSED : RELEASED;
-    if (this.keyStates.get(keyCode) === keyState) {
+    if (this.keyStates.get(code) === keyState) {
       return;
     }
-    this.keyStates.set(keyCode, keyState);
-    console.log(this.keyStates);
-
-    this.keyMap.get(keyCode)!(keyState);
+    this.keyStates.set(code, keyState);
+    this.keyMap.get(code)!(keyState);
   }
 
   listenTo(window: Window) {

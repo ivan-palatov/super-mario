@@ -12,6 +12,7 @@ export class Trait {
 export class Entity {
   pos = new Vec2(0, 0);
   vel = new Vec2(0, 0);
+  size = new Vec2(0, 0);
 
   [x: string]: Trait | any;
 
