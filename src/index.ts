@@ -2,7 +2,6 @@ import { Camera } from './classes/Camera';
 import { Timer } from './classes/Timer';
 import { debugTpMouse } from './debug';
 import { createMario } from './entities';
-import { createCameraLayer, createCollisionLayer } from './layers';
 import { loadLevel } from './loaders';
 import { setupKeyboard } from './setupKeyboard';
 
@@ -20,10 +19,10 @@ import { setupKeyboard } from './setupKeyboard';
   mario.pos.set(64, 64);
 
   // DEBUG SQUARE
-  level.comp.layers.push(
-    createCollisionLayer(level),
-    createCameraLayer(camera)
-  );
+  // level.comp.layers.push(
+  //   createCollisionLayer(level),
+  //   createCameraLayer(camera)
+  // );
 
   level.entities.add(mario);
 

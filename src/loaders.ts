@@ -52,13 +52,25 @@ function createTiles(level: Level, backgrounds: IBackground[]) {
   });
 }
 
-async function loadSpriteSheet(name: string) {
+export async function loadSpriteSheet(name: string) {
   const sheetSpec = await loadJSON<ISpriteSheet>(`./spriteSheets/${name}`);
   const image = await loadImage(sheetSpec.imageURL);
   const sprites = new SpriteSheet(image, sheetSpec.tileW, sheetSpec.tileH);
-  sheetSpec.tiles.forEach(tile => {
-    sprites.defineTile(tile.name, tile.index[0], tile.index[1]);
-  });
+  if (sheetSpec.tiles) {
+    sheetSpec.tiles.forEach(tile => {
+      sprites.defineTile(tile.name, tile.index[0], tile.index[1]);
+    });
+  } else {
+    sheetSpec.frames!.forEach(frame => {
+      sprites.define(
+        frame.name,
+        frame.rect[0],
+        frame.rect[1],
+        frame.rect[2],
+        frame.rect[3]
+      );
+    });
+  }
   return sprites;
 }
 

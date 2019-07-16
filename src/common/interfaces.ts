@@ -7,9 +7,13 @@ export interface ISpriteSheet {
   imageURL: string;
   tileW: number;
   tileH: number;
-  tiles: Array<{
+  tiles?: Array<{
     name: string;
     index: number[];
+  }>;
+  frames?: Array<{
+    name: string;
+    rect: number[];
   }>;
 }
 

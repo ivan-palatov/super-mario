@@ -1,14 +1,8 @@
 import { Context } from '../common/interfaces';
 
 export class SpriteSheet {
-  tiles = new Map<string, HTMLCanvasElement>();
+  tiles = new Map<string, HTMLCanvasElement[]>();
 
-  /**
-   *
-   * @param image full sprite image
-   * @param width tile width
-   * @param height tile height
-   */
   constructor(
     private readonly image: HTMLImageElement,
     private readonly width: number,
@@ -16,25 +10,31 @@ export class SpriteSheet {
   ) {}
 
   define(name: string, x: number, y: number, width: number, height: number) {
-    const buffer = document.createElement('canvas');
-    buffer.width = width;
-    buffer.height = height;
-    buffer
-      .getContext('2d')!
-      .drawImage(this.image, x, y, width, height, 0, 0, width, height);
-    this.tiles.set(name, buffer);
+    const buffers = [false, true].map(flip => {
+      const buffer = document.createElement('canvas');
+      buffer.width = width;
+      buffer.height = height;
+      const ctx = buffer.getContext('2d')!;
+
+      // Flip the defined tiles to the other way
+      if (flip) {
+        ctx.scale(-1, 1);
+        ctx.translate(-width, 0);
+      }
+
+      ctx.drawImage(this.image, x, y, width, height, 0, 0, width, height);
+      return buffer;
+    });
+
+    this.tiles.set(name, buffers);
   }
 
   defineTile(name: string, x: number, y: number) {
     this.define(name, x * this.width, y * this.height, this.width, this.height);
   }
 
-  draw(name: string, ctx: Context, x: number, y: number) {
-    const buffer = this.tiles.get(name);
-    if (!buffer)
-      throw new Error(
-        `Buffer "${name}" is not defined. Did you use .define first?`
-      );
+  draw(name: string, ctx: Context, x: number, y: number, flip = false) {
+    const buffer = this.tiles.get(name)![flip ? 1 : 0];
     ctx.drawImage(buffer, x, y);
   }
 
