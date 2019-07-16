@@ -10,8 +10,6 @@ import { setupKeyboard } from './setupKeyboard';
   if (!ctx) throw new Error('Cannot define 2D context');
 
   const [mario, level] = await Promise.all([createMario(), loadLevel('1-1')]);
-
-  const gravity = 2000;
   mario.pos.set(64, 64);
 
   // DEBUG SQUARE
@@ -22,23 +20,10 @@ import { setupKeyboard } from './setupKeyboard';
   const input = setupKeyboard(mario);
   input.listenTo(window);
 
-  // DEBUGG / MOVE MARIO WITH MOUSE STUFF
-  (['mousedown', 'mousemove'] as ['mousedown', 'mousemove']).forEach(
-    eventName => {
-      canvas.addEventListener(eventName, e => {
-        if (e.buttons === 1) {
-          mario.vel.set(0, 0);
-          mario.pos.set(e.offsetX, e.offsetY);
-        }
-      });
-    }
-  );
-
   const timer = new Timer();
   timer.update = function(deltaTime) {
     level.update(deltaTime);
     level.comp.draw(ctx);
-    mario.vel.y += gravity * deltaTime;
   };
 
   timer.start();
