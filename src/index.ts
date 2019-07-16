@@ -1,10 +1,7 @@
-import { Compositor } from './classes/Compositor';
 import { Keyboard } from './classes/Keyboard';
 import { Timer } from './classes/Timer';
 import { createMario } from './entities';
-import { createBackgroundLayer, createSpriteLayer } from './layers';
 import { loadLevel } from './loaders';
-import { loadBackgroundSprites } from './sprites';
 
 const SPACE = 32;
 
@@ -13,21 +10,12 @@ const SPACE = 32;
   const ctx = canvas.getContext('2d')!;
   if (!ctx) throw new Error('Cannot define 2D context');
 
-  const [mario, backgroundSprites, level] = await Promise.all([
-    createMario(),
-    loadBackgroundSprites(),
-    loadLevel('1-1'),
-  ]);
-
-  const comp = new Compositor();
-  const backgroundLayer = createBackgroundLayer(
-    level.backgrounds,
-    backgroundSprites
-  );
-  comp.layers.push(backgroundLayer);
+  const [mario, level] = await Promise.all([createMario(), loadLevel('1-1')]);
 
   const gravity = 2000;
-  mario.pos.set(64, 180);
+  mario.pos.set(64, 64);
+
+  level.entities.add(mario);
 
   const input = new Keyboard();
   input.addMapping(SPACE, keyState => {
@@ -38,13 +26,10 @@ const SPACE = 32;
   });
   input.listenTo(window);
 
-  const spriteLayer = createSpriteLayer(mario);
-  comp.layers.push(spriteLayer);
-
   const timer = new Timer();
   timer.update = function(deltaTime) {
-    mario.update(deltaTime);
-    comp.draw(ctx);
+    level.update(deltaTime);
+    level.comp.draw(ctx);
     mario.vel.y += gravity * deltaTime;
   };
 
