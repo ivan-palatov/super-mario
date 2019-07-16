@@ -5,18 +5,40 @@ import { SpriteSheet } from './classes/SpriteSheet';
 import { Context } from './common/interfaces';
 
 export function createBackgroundLayer(level: Level, sprites: SpriteSheet) {
+  const { tiles: resolver } = level.tileCollider;
+  const { tiles } = level;
+
   const buffer = document.createElement('canvas');
-  buffer.width = 2048;
+  buffer.width = 256 + 16;
   buffer.height = 240;
 
   const context = buffer.getContext('2d')!;
 
-  level.tiles.forEach((tile, x, y) => {
-    sprites.drawTile(tile.name, context, x, y);
-  });
+  let startIndex: number;
+  let endIndex: number;
+
+  function redraw(drawFrom: number, drawTo: number) {
+    if (drawFrom === startIndex && drawTo === endIndex) return;
+
+    startIndex = drawFrom;
+    endIndex = drawTo;
+    for (let x = drawFrom; x <= drawTo; ++x) {
+      const col = tiles.grid[x];
+      if (col) {
+        col.forEach((tile, y) => {
+          sprites.drawTile(tile.name, context, x - drawFrom, y);
+        });
+      }
+    }
+  }
 
   return function(ctx: Context, camera: Camera) {
-    ctx.drawImage(buffer, -camera.pos.x, -camera.pos.y);
+    const drawWidth = resolver.toIndex(camera.size.x);
+    const drawFrom = resolver.toIndex(camera.pos.x);
+    const drawTo = drawFrom + drawWidth;
+
+    redraw(drawFrom, drawTo);
+    ctx.drawImage(buffer, -camera.pos.x % 16, -camera.pos.y);
   };
 }
 
@@ -84,5 +106,19 @@ export function createCollisionLayer(level: Level) {
     });
 
     resolvedTiles.length = 0;
+  };
+}
+
+export function createCameraLayer(cameraToDraw: Camera) {
+  return function(ctx: Context, fromCamera: Camera) {
+    ctx.strokeStyle = 'pink';
+    ctx.beginPath();
+    ctx.rect(
+      cameraToDraw.pos.x - fromCamera.pos.x,
+      cameraToDraw.pos.y - fromCamera.pos.y,
+      cameraToDraw.size.x,
+      cameraToDraw.size.y
+    );
+    ctx.stroke();
   };
 }

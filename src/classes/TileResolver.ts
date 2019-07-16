@@ -17,7 +17,7 @@ export class TileResolver {
     public readonly tileSize: number = 16
   ) {}
 
-  private toIndex(pos: number) {
+  toIndex(pos: number) {
     return Math.floor(pos / this.tileSize);
   }
 
