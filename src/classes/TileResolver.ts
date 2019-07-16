@@ -3,6 +3,7 @@ import { Matrix } from './math';
 interface IRes {
   tile: {
     name: string;
+    type?: string;
   };
   y1: number;
   y2: number;

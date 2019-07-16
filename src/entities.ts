@@ -10,10 +10,9 @@ export async function createMario() {
 
   mario.addTrait(new Walk());
   mario.addTrait(new Jump());
-  // mario.addTrait(new Velocity());
 
   mario.draw = function(ctx) {
-    sprite.draw('idle', ctx, this.pos.x, this.pos.y);
+    sprite.draw('idle', ctx, 0, 0);
   };
 
   return mario;

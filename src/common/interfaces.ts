@@ -1,9 +1,21 @@
 export interface ILevel {
+  spriteSheet: string;
   backgrounds: IBackground[];
+}
+
+export interface ISpriteSheet {
+  imageURL: string;
+  tileW: number;
+  tileH: number;
+  tiles: Array<{
+    name: string;
+    index: number[];
+  }>;
 }
 
 export interface IBackground {
   tile: string;
+  type?: string;
   ranges: number[][];
 }
 

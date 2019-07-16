@@ -59,7 +59,7 @@ export class TileCollider {
       y
     );
     matches.forEach(match => {
-      if (match.tile.name !== 'ground') return;
+      if (match.tile.type !== 'ground') return;
 
       if (entity.vel.y > 0) {
         if (entity.pos.y + entity.size.y > match.y1) {

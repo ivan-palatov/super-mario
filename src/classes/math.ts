@@ -10,7 +10,7 @@ export class Vec2 {
 }
 
 export class Matrix {
-  grid: { name: string }[][] = [];
+  grid: { name: string; [x: string]: any }[][] = [];
 
   forEach(callBack: Callback) {
     this.grid.forEach((col, x) => {
