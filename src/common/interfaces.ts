@@ -1,12 +1,12 @@
 export interface ILevel {
   spriteSheet: string;
-  backgrounds: IBackground[];
+  tiles: ITile[];
   patterns: IPatterns;
 }
 
 export interface IPatterns {
   [x: string]: {
-    backgrounds: IBackground[];
+    tiles: ITile[];
   };
 }
 
@@ -29,10 +29,10 @@ export interface ISpriteSheet {
   }>;
 }
 
-export interface IBackground {
-  tile?: string;
-  type?: string;
+export interface ITile {
+  name?: string;
   pattern?: string;
+  type?: string;
   ranges: number[][];
 }
 

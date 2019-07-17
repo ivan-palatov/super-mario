@@ -1,7 +1,7 @@
 import { Camera } from './classes/Camera';
 import { Timer } from './classes/Timer';
 import { createMario } from './entities';
-import { loadLevel } from './loaders';
+import { loadLevel } from './loaders/level';
 import { setupKeyboard } from './setupKeyboard';
 
 (async () => {
