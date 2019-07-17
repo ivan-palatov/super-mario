@@ -1,6 +1,8 @@
 export interface ILevel {
   spriteSheet: string;
-  tiles: ITile[];
+  layers: {
+    tiles: ITile[];
+  }[];
   patterns: IPatterns;
 }
 

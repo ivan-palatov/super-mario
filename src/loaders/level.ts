@@ -1,4 +1,5 @@
 import { Level } from '../classes/Level';
+import { Matrix } from '../classes/math';
 import { ILevel, IPatterns, ITile } from '../common/interfaces';
 import { createBackgroundLayer, createSpriteLayer } from '../layers';
 import { loadJSON, loadSpriteSheet } from '../loaders';
@@ -66,23 +67,46 @@ function expandTiles(tiles: ITile[], patterns: IPatterns) {
   return expandedTiles;
 }
 
-export async function loadLevel(name: string): Promise<Level> {
-  const levelSpec = await loadJSON<ILevel>(`./levels/${name}`);
-  const backgroundSprites = await loadSpriteSheet(levelSpec.spriteSheet);
-  const level = new Level();
-
-  for (const { tile, x, y } of expandTiles(
-    levelSpec.tiles,
-    levelSpec.patterns
-  )) {
-    level.tiles.set(x, y, {
-      name: tile.name,
-      type: tile.type,
-    });
+function createCollisionGrid(tiles: ITile[], patterns: IPatterns) {
+  const grid = new Matrix();
+  for (const { tile, x, y } of expandTiles(tiles, patterns)) {
+    grid.set(x, y, { type: tile.type });
   }
 
-  const backgroundLayer = createBackgroundLayer(level, backgroundSprites);
-  level.comp.layers.push(backgroundLayer);
+  return grid;
+}
+
+function createBackgroundGrid(tiles: ITile[], patterns: IPatterns) {
+  const grid = new Matrix();
+  for (const { tile, x, y } of expandTiles(tiles, patterns)) {
+    grid.set(x, y, { name: tile.name });
+  }
+
+  return grid;
+}
+
+export async function loadLevel(name: string): Promise<Level> {
+  const lvl = await loadJSON<ILevel>(`./levels/${name}`);
+  const backgroundSprites = await loadSpriteSheet(lvl.spriteSheet);
+  const level = new Level();
+
+  const mergedTiles = lvl.layers.reduce(
+    (m, l) => [...m, ...l.tiles],
+    [] as ITile[]
+  );
+  const collisionGrid = createCollisionGrid(mergedTiles, lvl.patterns);
+  level.setCollisionGrid(collisionGrid);
+
+  lvl.layers.forEach(layer => {
+    const backgroundGrid = createBackgroundGrid(layer.tiles, lvl.patterns);
+    const backgroundLayer = createBackgroundLayer(
+      level,
+      backgroundGrid,
+      backgroundSprites
+    );
+    level.comp.layers.push(backgroundLayer);
+  });
+
   const spriteLayer = createSpriteLayer(level.entities);
   level.comp.layers.push(spriteLayer);
 
