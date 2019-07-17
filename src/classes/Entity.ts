@@ -1,7 +1,8 @@
 import { Context } from '../common/interfaces';
+import { BoundingBox } from './BoundingBox';
 import { Vec2 } from './math';
 
-export type Sides = 'top' | 'bottom';
+export type Sides = 'top' | 'bottom' | 'left' | 'right';
 
 export class Trait {
   constructor(public readonly name: string) {}
@@ -19,6 +20,11 @@ export class Entity {
   pos = new Vec2(0, 0);
   vel = new Vec2(0, 0);
   size = new Vec2(0, 0);
+  offset = new Vec2(0, 0);
+
+  bounds = new BoundingBox(this.pos, this.size, this.offset);
+
+  lifeTime = 0;
 
   [x: string]: Trait | any;
 
@@ -30,6 +36,8 @@ export class Entity {
     this.traits.forEach(trait => {
       trait.update(this, deltaTime);
     });
+
+    this.lifeTime += deltaTime;
   };
 
   addTrait(trait: Trait) {

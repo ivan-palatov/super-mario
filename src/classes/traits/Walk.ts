@@ -1,11 +1,10 @@
-import { SLOW_DRAG } from '../../entities';
 import { Entity, Trait } from '../Entity';
 
 export class Walk extends Trait {
   direction = 0;
   acceleration = 400;
   deceleration = 300;
-  dragFactor = SLOW_DRAG;
+  dragFactor = 1 / 5000;
 
   distance = 0;
   heading = 1;

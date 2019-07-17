@@ -89,7 +89,7 @@ export function createCollisionLayer(level: Level) {
     return getByIndexOriginal.call(tileResolver, x, y);
   };
 
-  return function(ctx: Context, camera: Camera) {
+  return function drawCollision(ctx: Context, camera: Camera) {
     ctx.strokeStyle = 'blue';
     resolvedTiles.forEach(({ x, y }) => {
       ctx.beginPath();
@@ -106,8 +106,8 @@ export function createCollisionLayer(level: Level) {
     level.entities.forEach(entity => {
       ctx.beginPath();
       ctx.rect(
-        entity.pos.x - camera.pos.x,
-        entity.pos.y - camera.pos.y,
+        entity.bounds.left - camera.pos.x,
+        entity.bounds.top - camera.pos.y,
         entity.size.x,
         entity.size.y
       );

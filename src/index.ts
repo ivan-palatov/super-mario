@@ -1,6 +1,7 @@
 import { Camera } from './classes/Camera';
 import { Timer } from './classes/Timer';
-import { createMario } from './entities';
+import { loadEntities } from './entities';
+import { createCollisionLayer } from './layers';
 import { loadLevel } from './loaders/level';
 import { setupKeyboard } from './setupKeyboard';
 
@@ -9,12 +10,26 @@ import { setupKeyboard } from './setupKeyboard';
   const ctx = canvas.getContext('2d')!;
   if (!ctx) throw new Error('Cannot define 2D context');
 
-  const [mario, level] = await Promise.all([createMario(), loadLevel('1-1')]);
+  const [entities, level] = await Promise.all([
+    loadEntities(),
+    loadLevel('1-1'),
+  ]);
   const camera = new Camera();
 
+  const mario = entities.mario();
   mario.pos.set(64, 64);
 
+  const goomba = entities.goomba();
+  goomba.pos.set(220, 0);
+
+  const koopa = entities.koopa();
+  koopa.pos.set(260, 0);
+
   level.entities.add(mario);
+  level.entities.add(goomba);
+  level.entities.add(koopa);
+
+  level.comp.layers.push(createCollisionLayer(level));
 
   const input = setupKeyboard(mario);
   input.listenTo(window);
