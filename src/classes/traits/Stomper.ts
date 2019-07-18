@@ -1,7 +1,7 @@
 import { Entity, Trait } from '../Entity';
 
 export class Stomper extends Trait {
-  bounceSpeed = 400;
+  bounceSpeed = 150;
 
   constructor() {
     super('stomper');

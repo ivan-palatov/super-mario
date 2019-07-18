@@ -10,6 +10,13 @@ import { setupKeyboard } from './setupKeyboard';
   const canvas = document.getElementById('game') as HTMLCanvasElement;
   const ctx = canvas.getContext('2d')!;
 
+  // TODO: chance blocks functionality
+  // TODO: animation on death
+  // TODO: 2 lives
+  // TODO: chance blocks boosts
+  // TODO: projectiles? is it even a thing in mario?
+  // TODO: restart level functionality
+
   const [entityFactory, font] = await Promise.all([loadEntities(), loadFont()]);
   const loadLevel = await createLevelLoader(entityFactory);
   const level = await loadLevel('1-1');

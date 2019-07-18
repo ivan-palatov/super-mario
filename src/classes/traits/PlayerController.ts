@@ -23,6 +23,9 @@ export class PlayerController extends Trait {
   update(entity: Entity, deltaTime: number, level: Level) {
     if (level.entities.has(this.player!)) {
       this.time -= deltaTime * 2; // cause original mario had it faster
+      if (this.time < 0) {
+        // TODO: restart level
+      }
       return;
     }
     this.player!.killable.revive();
