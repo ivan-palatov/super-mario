@@ -3,11 +3,11 @@ import { Context } from '../common/interfaces';
 import { Font } from '../loaders/font';
 
 export function createDashboardLayer(font: Font, player: Entity) {
-  const score = 25600;
   const coins = 17;
 
   return function drawDashboard(ctx: Context) {
-    const time = player.playerController.time as number;
+    const { time, score } = player.playerController;
+
     font.printTile('MARIO', ctx, 2, 1);
     font.printTile(`${score}`.padStart(6, '0'), ctx, 2, 2);
 

@@ -6,6 +6,7 @@ export class PlayerController extends Trait {
   player: Entity | null = null;
   checkPoint = new Vec2(0, 0);
   time = 300;
+  score = 0;
 
   constructor() {
     super('playerController');
@@ -13,6 +14,10 @@ export class PlayerController extends Trait {
 
   setPlayer(entity: Entity) {
     this.player = entity;
+
+    this.player.stomper.onStomp = () => {
+      this.score += 100;
+    };
   }
 
   update(entity: Entity, deltaTime: number, level: Level) {

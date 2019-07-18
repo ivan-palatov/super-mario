@@ -5,7 +5,7 @@ import { Matrix } from './math';
 import { TileCollider } from './TileCollider';
 
 export class Level {
-  readonly gravity = 1500;
+  readonly gravity = 1200;
 
   totalTime = 0;
   comp = new Compositor();

@@ -20,7 +20,12 @@ export class Killable extends Trait {
   }
 
   update(entity: Entity, deltaTime: number, level: Level) {
-    if (!this.dead) return;
+    if (!this.dead) {
+      if (entity.pos.y > 22 * 16) {
+        level.entities.delete(entity);
+      }
+      return;
+    }
     this.deadTime += deltaTime;
     if (this.deadTime < this.removeAfter) return;
     level.entities.delete(entity);

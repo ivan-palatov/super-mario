@@ -10,7 +10,7 @@ import { Walk } from '../classes/traits/Walk';
 import { Context } from '../common/interfaces';
 import { loadSpriteSheet } from '../loaders';
 
-export const SLOW_DRAG = 1 / 1000;
+export const SLOW_DRAG = 1 / 3000;
 const FAST_DRAG = 1 / 5000;
 
 export async function loadMario() {

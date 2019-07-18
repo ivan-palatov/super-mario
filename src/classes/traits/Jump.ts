@@ -1,7 +1,7 @@
 import { Entity, Sides, Trait } from '../Entity';
 
 export class Jump extends Trait {
-  duration = 0.3;
+  duration = 0.25;
   velocity = 200;
   engageTime = 0;
   ready = 0;
