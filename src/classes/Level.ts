@@ -41,6 +41,11 @@ export class Level {
       }
     });
 
+    // Do all enqueued tasks in each entity trait
+    this.entities.forEach(entity => {
+      entity.finalize();
+    });
+
     this.totalTime += delta;
   }
 }

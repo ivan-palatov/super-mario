@@ -6,7 +6,18 @@ import { Vec2 } from './math';
 export type Sides = 'top' | 'bottom' | 'left' | 'right';
 
 export class Trait {
+  tasks: Array<() => any> = [];
+
   constructor(public readonly name: string) {}
+
+  queue(task: () => any) {
+    this.tasks.push(task);
+  }
+
+  finalize() {
+    this.tasks.forEach(task => task());
+    this.tasks.length = 0;
+  }
 
   update(entity: Entity, deltaTime: number, level: Level) {}
 
@@ -53,6 +64,12 @@ export class Entity {
   collides(candidate: Entity) {
     this.traits.forEach(trait => {
       trait.collides(this, candidate);
+    });
+  }
+
+  finalize() {
+    this.traits.forEach(trait => {
+      trait.finalize();
     });
   }
 }
