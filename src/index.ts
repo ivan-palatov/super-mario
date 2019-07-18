@@ -29,9 +29,8 @@ import { setupKeyboard } from './setupKeyboard';
   timer.update = function(deltaTime) {
     level.update(deltaTime);
     // move camera with mario
-    if (mario.pos.x > 100) {
-      camera.pos.x = mario.pos.x - 100;
-    }
+    camera.pos.x = Math.max(0, mario.pos.x - 100);
+
     level.comp.draw(ctx, camera);
   };
 

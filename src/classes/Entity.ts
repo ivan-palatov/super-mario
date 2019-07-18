@@ -1,5 +1,6 @@
 import { Context } from '../common/interfaces';
 import { BoundingBox } from './BoundingBox';
+import { Level } from './Level';
 import { Vec2 } from './math';
 
 export type Sides = 'top' | 'bottom' | 'left' | 'right';
@@ -7,13 +8,11 @@ export type Sides = 'top' | 'bottom' | 'left' | 'right';
 export class Trait {
   constructor(public readonly name: string) {}
 
-  update(entity: Entity, deltaTime: number) {
-    console.warn('Unhandled update call in Trait class.');
-  }
+  update(entity: Entity, deltaTime: number, level: Level) {}
 
-  obstruct(entity: Entity, side: Sides) {
-    //
-  }
+  obstruct(entity: Entity, side: Sides) {}
+
+  collides(us: Entity, them: Entity) {}
 }
 
 export class Entity {
@@ -28,17 +27,16 @@ export class Entity {
 
   [x: string]: Trait | any;
 
-  draw: (ctx: Context) => void;
-
   traits: Trait[] = [];
 
-  update = (deltaTime: number) => {
-    this.traits.forEach(trait => {
-      trait.update(this, deltaTime);
-    });
+  draw(ctx: Context) {}
 
+  update(deltaTime: number, level: Level) {
+    this.traits.forEach(trait => {
+      trait.update(this, deltaTime, level);
+    });
     this.lifeTime += deltaTime;
-  };
+  }
 
   addTrait(trait: Trait) {
     this.traits.push(trait);
@@ -48,6 +46,12 @@ export class Entity {
   obstruct(side: Sides) {
     this.traits.forEach(trait => {
       trait.obstruct(this, side);
+    });
+  }
+
+  collides(candidate: Entity) {
+    this.traits.forEach(trait => {
+      trait.collides(this, candidate);
     });
   }
 }

@@ -3,6 +3,15 @@ import { Vec2 } from './math';
 export class BoundingBox {
   constructor(private pos: Vec2, private size: Vec2, private offset: Vec2) {}
 
+  overlaps(box: BoundingBox) {
+    return (
+      this.bottom > box.top &&
+      this.top < box.bottom &&
+      this.left < box.right &&
+      this.right > box.left
+    );
+  }
+
   get bottom() {
     return this.pos.y + this.size.y + this.offset.y;
   }

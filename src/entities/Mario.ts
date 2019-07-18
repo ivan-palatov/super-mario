@@ -1,6 +1,9 @@
 import { Entity } from '../classes/Entity';
 import { SpriteSheet } from '../classes/SpriteSheet';
 import { Jump } from '../classes/traits/Jump';
+import { Killable } from '../classes/traits/Killable';
+import { PlayerController } from '../classes/traits/PlayerController';
+import { Stomper } from '../classes/traits/Stomper';
 import { Walk } from '../classes/traits/Walk';
 import { Context } from '../common/interfaces';
 import { loadSpriteSheet } from '../loaders';
@@ -11,6 +14,13 @@ const FAST_DRAG = 1 / 5000;
 export async function loadMario() {
   const sprite = await loadSpriteSheet('mario');
   return createMarioFactory(sprite);
+}
+
+function createPlayerController(entity: Entity) {
+  const controller = new PlayerController();
+  controller.player = entity;
+  controller.checkPoint.set(64, 64);
+  return controller;
 }
 
 function createMarioFactory(sprite: SpriteSheet) {
@@ -46,6 +56,11 @@ function createMarioFactory(sprite: SpriteSheet) {
 
     mario.addTrait(new Walk());
     mario.addTrait(new Jump());
+    mario.addTrait(new Killable());
+    mario.addTrait(new Stomper());
+    mario.addTrait(createPlayerController(mario));
+
+    mario.killable.removeAfter = 0;
 
     mario.turbo = turboMode;
     mario.draw = drawMario;
