@@ -2,7 +2,8 @@ import { Level } from '../classes/Level';
 import { Matrix } from '../classes/math';
 import { SpriteSheet } from '../classes/SpriteSheet';
 import { IEntityFactory, ILevel, IPatterns, ITile } from '../common/interfaces';
-import { createBackgroundLayer, createSpriteLayer } from '../layers';
+import { createBackgroundLayer } from '../layers/background';
+import { createSpriteLayer } from '../layers/sprite';
 import { loadJSON, loadSpriteSheet } from '../loaders';
 
 function* expandSpan(
