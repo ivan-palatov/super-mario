@@ -1,7 +1,6 @@
 import { Camera } from './classes/Camera';
 import { Timer } from './classes/Timer';
 import { loadEntities } from './entities';
-import { createCollisionLayer } from './layers';
 import { createLevelLoader } from './loaders/level';
 import { setupKeyboard } from './setupKeyboard';
 
@@ -20,7 +19,7 @@ import { setupKeyboard } from './setupKeyboard';
   mario.pos.set(64, 64);
   level.entities.add(mario);
 
-  level.comp.layers.push(createCollisionLayer(level));
+  // level.comp.layers.push(createCollisionLayer(level));
 
   const input = setupKeyboard(mario);
   input.listenTo(window);
