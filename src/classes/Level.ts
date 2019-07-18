@@ -22,9 +22,13 @@ export class Level {
       entity.update(delta, this);
       // Apply velocity and handle tile collisions
       entity.pos.x += entity.vel.x * delta;
-      this.tileCollider!.checkX(entity);
+      if (entity.canCollide) {
+        this.tileCollider!.checkX(entity);
+      }
       entity.pos.y += entity.vel.y * delta;
-      this.tileCollider!.checkY(entity);
+      if (entity.canCollide) {
+        this.tileCollider!.checkY(entity);
+      }
       // Apply gravity
       entity.vel.y += this.gravity * delta;
     });
@@ -32,7 +36,9 @@ export class Level {
     // Entity collision check
     // If do that in prev. loop, race condition
     this.entities.forEach(entity => {
-      this.entityCollider.check(entity);
+      if (entity.canCollide) {
+        this.entityCollider.check(entity);
+      }
     });
 
     this.totalTime += delta;

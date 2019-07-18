@@ -23,6 +23,7 @@ export class Entity {
 
   bounds = new BoundingBox(this.pos, this.size, this.offset);
 
+  canCollide = true;
   lifeTime = 0;
 
   [x: string]: Trait | any;

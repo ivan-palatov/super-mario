@@ -1,10 +1,11 @@
 import { Entity, Sides, Trait } from '../Entity';
 
-export class PendulumWalk extends Trait {
+export class PendulumMove extends Trait {
   speed = -30;
+  enabled = true;
 
   constructor() {
-    super('pendulumWalk');
+    super('pendulumMove');
   }
 
   obstruct(entity: Entity, side: Sides) {
@@ -13,6 +14,8 @@ export class PendulumWalk extends Trait {
     }
   }
   update(entity: Entity) {
-    entity.vel.x = this.speed;
+    if (this.enabled) {
+      entity.vel.x = this.speed;
+    }
   }
 }
