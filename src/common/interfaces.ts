@@ -1,9 +1,21 @@
+import { Entity } from '../classes/Entity';
+
 export interface ILevel {
   spriteSheet: string;
   layers: {
     tiles: ITile[];
   }[];
   patterns: IPatterns;
+  entities: IEntity[];
+}
+
+export interface IEntityFactory {
+  [x: string]: () => Entity;
+}
+
+export interface IEntity {
+  name: string;
+  pos: [number, number];
 }
 
 export interface IPatterns {
