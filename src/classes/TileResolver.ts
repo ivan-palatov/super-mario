@@ -1,15 +1,5 @@
+import { IRes } from '../common/interfaces';
 import { Matrix } from './math';
-
-interface IRes {
-  tile: {
-    name: string;
-    type?: string;
-  };
-  y1: number;
-  y2: number;
-  x1: number;
-  x2: number;
-}
 
 export class TileResolver {
   constructor(

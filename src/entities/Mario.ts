@@ -2,7 +2,9 @@ import { Entity } from '../classes/Entity';
 import { SpriteSheet } from '../classes/SpriteSheet';
 import { Jump } from '../classes/traits/Jump';
 import { Killable } from '../classes/traits/Killable';
+import { Physics } from '../classes/traits/Physics';
 import { PlayerController } from '../classes/traits/PlayerController';
+import { Solid } from '../classes/traits/Solid';
 import { Stomper } from '../classes/traits/Stomper';
 import { Walk } from '../classes/traits/Walk';
 import { Context } from '../common/interfaces';
@@ -18,7 +20,7 @@ export async function loadMario() {
 
 function createPlayerController(entity: Entity) {
   const controller = new PlayerController();
-  controller.player = entity;
+  controller.setPlayer(entity);
   controller.checkPoint.set(64, 64);
   return controller;
 }
@@ -54,6 +56,8 @@ function createMarioFactory(sprite: SpriteSheet) {
     const mario = new Entity();
     mario.size.set(14, 16);
 
+    mario.addTrait(new Solid());
+    mario.addTrait(new Physics());
     mario.addTrait(new Walk());
     mario.addTrait(new Jump());
     mario.addTrait(new Killable());

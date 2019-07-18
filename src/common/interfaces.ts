@@ -9,6 +9,17 @@ export interface ILevel {
   entities: IEntity[];
 }
 
+export interface IRes {
+  tile: {
+    name: string;
+    type?: string;
+  };
+  y1: number;
+  y2: number;
+  x1: number;
+  x2: number;
+}
+
 export interface IEntityFactory {
   [x: string]: () => Entity;
 }

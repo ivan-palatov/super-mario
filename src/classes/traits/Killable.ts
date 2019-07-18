@@ -15,14 +15,18 @@ export class Killable extends Trait {
   }
 
   revive() {
-    this.dead = false;
-    this.deadTime = 0;
+    this.queue(() => {
+      this.dead = false;
+      this.deadTime = 0;
+    });
   }
 
   update(entity: Entity, deltaTime: number, level: Level) {
     if (!this.dead) return;
     this.deadTime += deltaTime;
     if (this.deadTime < this.removeAfter) return;
-    level.entities.delete(entity);
+    this.queue(() => {
+      level.entities.delete(entity);
+    });
   }
 }

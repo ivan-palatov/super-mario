@@ -1,4 +1,4 @@
-import { Context } from '../common/interfaces';
+import { Context, IRes } from '../common/interfaces';
 import { BoundingBox } from './BoundingBox';
 import { Level } from './Level';
 import { Vec2 } from './math';
@@ -21,7 +21,7 @@ export class Trait {
 
   update(entity: Entity, deltaTime: number, level: Level) {}
 
-  obstruct(entity: Entity, side: Sides) {}
+  obstruct(entity: Entity, side: Sides, match: IRes) {}
 
   collides(us: Entity, them: Entity) {}
 }
@@ -34,7 +34,6 @@ export class Entity {
 
   bounds = new BoundingBox(this.pos, this.size, this.offset);
 
-  canCollide = true;
   lifeTime = 0;
 
   [x: string]: Trait | any;
@@ -55,9 +54,9 @@ export class Entity {
     this[trait.name] = trait;
   }
 
-  obstruct(side: Sides) {
+  obstruct(side: Sides, match: IRes) {
     this.traits.forEach(trait => {
-      trait.obstruct(this, side);
+      trait.obstruct(this, side, match);
     });
   }
 

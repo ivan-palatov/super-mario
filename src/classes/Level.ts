@@ -5,7 +5,7 @@ import { Matrix } from './math';
 import { TileCollider } from './TileCollider';
 
 export class Level {
-  private readonly gravity = 1500;
+  readonly gravity = 1500;
 
   totalTime = 0;
   comp = new Compositor();
@@ -17,28 +17,13 @@ export class Level {
     this.tileCollider = new TileCollider(matrix);
   }
 
-  update(delta: number) {
+  update(deltaTime: number) {
     this.entities.forEach(entity => {
-      entity.update(delta, this);
-      // Apply velocity and handle tile collisions
-      entity.pos.x += entity.vel.x * delta;
-      if (entity.canCollide) {
-        this.tileCollider!.checkX(entity);
-      }
-      entity.pos.y += entity.vel.y * delta;
-      if (entity.canCollide) {
-        this.tileCollider!.checkY(entity);
-      }
-      // Apply gravity
-      entity.vel.y += this.gravity * delta;
+      entity.update(deltaTime, this);
     });
-
-    // Entity collision check
     // If do that in prev. loop, race condition
     this.entities.forEach(entity => {
-      if (entity.canCollide) {
-        this.entityCollider.check(entity);
-      }
+      this.entityCollider.check(entity);
     });
 
     // Do all enqueued tasks in each entity trait
@@ -46,6 +31,6 @@ export class Level {
       entity.finalize();
     });
 
-    this.totalTime += delta;
+    this.totalTime += deltaTime;
   }
 }
